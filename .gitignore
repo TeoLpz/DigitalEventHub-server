@@ -1,0 +1,27 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Directorio de dependencias
+node_modules/
+
+# Archivos de entorno
+# .env
+
+# Directorios de construcción
+build/
+dist/
+
+# Directorios de pruebas
+coverage/
+
+# Directorios de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
