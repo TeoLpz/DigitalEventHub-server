@@ -53,15 +53,16 @@ const createEvent = async (req, res) => {
 
   const getEvent = async (req, res) => {
     try {
-
+      // Consulta para obtener todas las notificaciones
       const [rows] = await pool.query(
         'SELECT * FROM notificaciones'
       );
   
+      // Enviar los resultados como respuesta
       res.status(200).json(rows);
     } catch (error) {
-      console.error('Error al obtener la lista de eventos:', error);
-      res.status(500).send('Error al obtener la lista de eventos:');
+      console.error('Error al obtener las notificaciones:', error);
+      res.status(500).send('Error al obtener las notificaciones');
     }
   };
 
