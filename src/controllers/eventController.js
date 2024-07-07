@@ -19,7 +19,6 @@ const createEvent = async (req, res) => {
     try {
      
     // CONSULTA
-  
 
     // RESPUESTA
       res.status(200).json(rows);
@@ -33,32 +32,36 @@ const createEvent = async (req, res) => {
 
   const deleteEvent = async (req, res) => {
     try {
-     
-    // CONSULTA
-  
+      const { id } = req.body;
 
-    // RESPUESTA
-      res.status(200).json(rows);
+      const [result] = await pool.query(
+        'DELETE FROM notificaciones WHERE id = ?',
+        [id]
+      );
+      
+      if (result.affectedRows === 0) {
+        return res.status(404).send('Evento no encontrado');
+      }
+  
+      res.status(200).send('Evento eliminado exitosamente');
     } catch (error) {
-    // MSG ERROR
-      console.error('Error al obtener las notificaciones:', error);
-      res.status(500).send('Error al obtener las notificaciones');
+      console.error('Error al eliminar el evento:', error);
+      res.status(500).send('Error al eliminar la evento');
     }
   };
 
 
   const getEvent = async (req, res) => {
     try {
-     
-    // CONSULTA
-  
 
-    // RESPUESTA
+      const [rows] = await pool.query(
+        'SELECT * FROM notificaciones'
+      );
+  
       res.status(200).json(rows);
     } catch (error) {
-    // MSG ERROR
-      console.error('Error al obtener las notificaciones:', error);
-      res.status(500).send('Error al obtener las notificaciones');
+      console.error('Error al obtener la lista de eventos:', error);
+      res.status(500).send('Error al obtener la lista de eventos:');
     }
   };
 

@@ -4,7 +4,6 @@ const  receiveNotification = async (req, res) => {
   const { titulo, cuerpo } = req.body;
 
   try {
-    // Guarda la notificación en la base de datos
     const [result] = await pool.query(
       'INSERT INTO notificaciones (titulo, cuerpo) VALUES (?, ?)',
       [titulo, cuerpo]
