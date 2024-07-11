@@ -16,4 +16,6 @@ const eventsRoutes = require('./eventRoutes');
 router.use('/notifications', notificationRoutes);
 router.use('/events', eventsRoutes);
 
+
+
 module.exports = router;
