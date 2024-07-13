@@ -16,7 +16,10 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.10.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "argon2": "^0.40.3",
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

@@ -1,15 +1,15 @@
 const pool = require('../config/connection_db');
 
-const  receiveNotification = async (req, res) => {
-  const { titulo, cuerpo } = req.body;
+const receiveNotification = async (req, res) => {
+  const { usuario_id, mensaje } = req.body;
 
   try {
     const [result] = await pool.query(
-      'INSERT INTO Notificaciones (titulo, cuerpo) VALUES (?, ?)',
-      [titulo, cuerpo]
+      'INSERT INTO NotificacionO (usuario_id, mensaje) VALUES (?, ?)',
+      [usuario_id, mensaje]
     );
 
-    console.log('Notificación guardada:', { id: result.insertId, titulo, cuerpo });
+    console.log('Notificación guardada:', { id: result.insertId, usuario_id, mensaje });
 
     res.status(200).send('Notificación recibida');
   } catch (error) {
@@ -18,15 +18,13 @@ const  receiveNotification = async (req, res) => {
   }
 };
 
+
 const viewNotifications = async (req, res) => {
   try {
-    // Consulta para obtener todas las Notificaciones
-    const [rows] = await pool.query(
-      'SELECT * FROM Notificaciones'
+    const [result] = await pool.query(
+      'SELECT * FROM NotificacionO'
     );
-
-    // Enviar los resultados como respuesta
-    res.status(200).json(rows);
+    res.status(200).json(result);
   } catch (error) {
     console.error('Error al obtener las Notificaciones:', error);
     res.status(500).send('Error al obtener las Notificaciones');

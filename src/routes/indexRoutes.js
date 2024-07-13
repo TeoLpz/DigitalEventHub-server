@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('Documentacion en /api-docs');
-});
 
 
 // Importar y usar otras rutas
 const notificationRoutes = require('./notificationRoutes');
-const eventsRoutes = require('./eventRoutes');
+const eventRoutes = require('./eventRoutes');
+const userRoutes = require('./userRoutes');
 
 
 
 // Categorias de las rutas
-router.use('/notifications', notificationRoutes);
-router.use('/events', eventsRoutes);
+router.use('/notification', notificationRoutes);
+router.use('/event', eventRoutes);
+router.use('/user', userRoutes);
+
 
 
 
