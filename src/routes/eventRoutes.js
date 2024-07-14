@@ -14,6 +14,6 @@ router.get('/get', eventnController.getEvent);
 router.get("/:eventId/users", verifyToken(2),eventnController.registrationEvent);
 router.put("/:eventId/users/:userId",verifyToken(2),eventnController.updateRegistrationEvent);
 
-// NO SE QUE PEDO CON LOS TOKENS - Teo
+// NO SE QUE PEDO CON LOS TOKENS - Canul Brayan
 
 module.exports = router;
