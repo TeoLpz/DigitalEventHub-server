@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const eventnController = require('../controllers/eventController');
+const imgEventController = require('../controllers/imgEventController'); // Ruta del get eventos con imagen
 const verifyToken = require("../middlewares/verify-token-rol");
 
 
@@ -9,6 +10,8 @@ router.post('/create', eventnController.createEvent);
 router.delete('/delete', eventnController.deleteEvent);
 router.put('/update', eventnController.updateEvent);
 router.get('/get', eventnController.getEvent);
+
+router.get('/get/img', imgEventController.getImgEvent);
 
 // Administracion de usarios en eventos - Jesus Team
 router.get("/:eventId/users", verifyToken(2),eventnController.registrationEvent);
