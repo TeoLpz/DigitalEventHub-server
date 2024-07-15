@@ -4,8 +4,17 @@ const notificationController = require('../controllers/notificationController');
 
 /**
  * @openapi
+ * tags:
+ *   name: Notifications
+ *   description: API for managing notifications
+ */
+
+/**
+ * @openapi
  * /api/notifications/send:
  *   post:
+ *     tags:
+ *       - Notifications
  *     description: Recibe una notificación.
  *     requestBody:
  *       required: true
@@ -26,10 +35,13 @@ const notificationController = require('../controllers/notificationController');
  */
 router.post('/send', notificationController.receiveNotification);
 
+
 /**
  * @openapi
  * /api/notifications/getAll:
  *   get:
+ *     tags:
+ *       - Notifications
  *     description: Obtiene todas las notificaciones.
  *     responses:
  *       200:

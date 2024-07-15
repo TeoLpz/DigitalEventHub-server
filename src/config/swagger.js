@@ -13,7 +13,7 @@ const options = {
       description: 'Documentación de la API',
     },
   },
-  apis: ['src/routes/notificationRoutes.js'],
+  apis: ['src/routes/notificationRoutes.js','src/routes/eventRoutes.js'],
 };
 
 const specs = swaggerJsdoc(options);

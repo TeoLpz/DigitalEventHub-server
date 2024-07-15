@@ -4,9 +4,8 @@ const  receiveNotification = async (req, res) => {
   const { titulo, cuerpo } = req.body;
 
   try {
-    // Guarda la notificación en la base de datos
     const [result] = await pool.query(
-      'INSERT INTO notificaciones (titulo, cuerpo) VALUES (?, ?)',
+      'INSERT INTO Notificaciones (titulo, cuerpo) VALUES (?, ?)',
       [titulo, cuerpo]
     );
 
@@ -21,16 +20,16 @@ const  receiveNotification = async (req, res) => {
 
 const viewNotifications = async (req, res) => {
   try {
-    // Consulta para obtener todas las notificaciones
+    // Consulta para obtener todas las Notificaciones
     const [rows] = await pool.query(
-      'SELECT * FROM notificaciones'
+      'SELECT * FROM Notificaciones'
     );
 
     // Enviar los resultados como respuesta
     res.status(200).json(rows);
   } catch (error) {
-    console.error('Error al obtener las notificaciones:', error);
-    res.status(500).send('Error al obtener las notificaciones');
+    console.error('Error al obtener las Notificaciones:', error);
+    res.status(500).send('Error al obtener las Notificaciones');
   }
 };
 
