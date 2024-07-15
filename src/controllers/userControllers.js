@@ -71,6 +71,8 @@ const postUsers = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     getUsers,
     postUsers

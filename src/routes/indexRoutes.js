@@ -7,6 +7,7 @@ const router = express.Router();
 const notificationRoutes = require('./notificationRoutes');
 const eventRoutes = require('./eventRoutes');
 const userRoutes = require('./userRoutes');
+const authRoutes = require('./authRoutes');
 
 
 
@@ -14,6 +15,8 @@ const userRoutes = require('./userRoutes');
 router.use('/notification', notificationRoutes);
 router.use('/event', eventRoutes);
 router.use('/user', userRoutes);
+router.use('/user', authRoutes);
+
 
 
 
