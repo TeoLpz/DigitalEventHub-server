@@ -12,6 +12,7 @@ router.put('/update', eventnController.updateEvent);
 router.get('/get', eventnController.getEvent);
 
 router.get('/get/img', imgEventController.getImgEvent);
+router.post('/post/img', imgEventController.postImgEvent);
 
 // Administracion de usarios en eventos - Jesus Team
 router.get("/:eventId/users", verifyToken(2),eventnController.registrationEvent);

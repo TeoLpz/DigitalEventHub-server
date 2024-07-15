@@ -20,7 +20,41 @@ const getImgEvent = async (req, res) => {
     }
   };
 
+  const postImgEvent = async (req, res) => {
+    const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, organizador_id, categoria_id, ubicacion, max_per, estado, autorizado_por, fecha_autorizacion, validacion_id, imagen_url } = req.body;
+
+
+    try {
+        // Insertar el evento
+        const [resultEvento] = await pool.query(
+            `INSERT INTO eventos (nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, organizador_id, categoria_id, ubicacion, max_per, estado, autorizado_por, fecha_autorizacion, validacion_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, organizador_id, categoria_id, ubicacion, max_per, estado, autorizado_por, fecha_autorizacion, validacion_id]
+        );
+
+        const evento_id = resultEvento.insertId;
+
+        // Insertar la imagen asociada al evento
+        await pool.query(
+            `INSERT INTO imagenes (evento_id, imagen_url) VALUES (?, ?)`,
+            [evento_id, imagen_url]
+        );
+
+      
+
+        // Éxito al crear el evento
+        res.status(201).send('Evento creado correctamente');
+    } catch (error) {
+
+        console.error('Error al crear el evento:', error);
+        res.status(500).send('Error al crear el evento');
+    } 
+};
+
+
+
 module.exports = {
-    getImgEvent 
+    getImgEvent ,
+    postImgEvent
 };
 

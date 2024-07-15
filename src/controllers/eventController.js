@@ -126,7 +126,11 @@ const createEvent = async (req, res) => {
   const deleteEvent = async (req, res) => {
     try {
       const { evento_id } = req.body;
-
+  
+      // Primero, elimina los registros relacionados en la tabla 'registroev'
+      await pool.query('DELETE FROM registroev WHERE evento_id = ?', [evento_id]);
+  
+      // Luego, elimina el evento de la tabla 'eventos'
       const [result] = await pool.query(
         'DELETE FROM eventos WHERE evento_id = ?',
         [evento_id]
@@ -142,6 +146,7 @@ const createEvent = async (req, res) => {
       res.status(500).send('Error al eliminar la evento');
     }
   };
+  
 
 
   const getEvent = async (req, res) => {
