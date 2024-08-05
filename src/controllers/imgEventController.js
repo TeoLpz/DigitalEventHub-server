@@ -18,9 +18,9 @@ const getImgEvent = async (req, res) => {
         console.error('Error al obtener la lista de eventos:', error);
         res.status(500).send('Error al obtener la lista de eventos');
     }
-  };
+};
 
-  const postImgEvent = async (req, res) => {
+const postImgEvent = async (req, res) => {
     const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, organizador_id, categoria_id, ubicacion, max_per, estado, autorizado_por, fecha_autorizacion, validacion_id, imagen_url } = req.body;
 
 
@@ -40,15 +40,13 @@ const getImgEvent = async (req, res) => {
             [evento_id, imagen_url]
         );
 
-      
-
         // Éxito al crear el evento
         res.status(201).send('Evento creado correctamente');
     } catch (error) {
 
         console.error('Error al crear el evento:', error);
         res.status(500).send('Error al crear el evento');
-    } 
+    }
 };
 
 // Función para obtener eventos aprobados
@@ -74,7 +72,7 @@ const getApprovedEvent = async (req, res) => {
 };
 
 module.exports = {
-    getImgEvent ,
+    getImgEvent,
     postImgEvent,
     getApprovedEvent
 };
