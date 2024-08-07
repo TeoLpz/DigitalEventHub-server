@@ -5,9 +5,14 @@ const getPendingEvent = async (req, res) => {
     try {
         // Consulta SQL para obtener eventos con estado "Pendiente" y una sola imagen por evento
         const [rows] = await pool.query(
-            `SELECT e.evento_id, e.nombre, e.fecha_inicio, e.fecha_termino, e.hora, e.tipo_evento_id, e.organizador_id, e.categoria_id, e.ubicacion, e.max_per, e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
-                    (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url
+            `SELECT e.evento_id, e.nombre AS evento_nombre, e.fecha_inicio, e.fecha_termino, e.hora, 
+                    te.nombre AS tipo_evento_nombre, c.nombre AS categoria_nombre, 
+                    e.ubicacion, e.max_per, e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
+                    (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url,
+                    (SELECT i.monto FROM pagos i WHERE i.pago_id = e.evento_id LIMIT 1) AS monto
              FROM eventos e
+             JOIN Tipos_Evento te ON e.tipo_evento_id = te.tipo_evento_id
+             JOIN Categorias c ON e.categoria_id = c.categoria_id
              WHERE e.estado = 'Pendiente'`
         );
 
