@@ -5,10 +5,12 @@ const getImgEvent = async (req, res) => {
         // Consulta SQL para obtener eventos con una sola imagen por evento y nombres correspondientes
         const [rows] = await pool.query(
             `SELECT e.evento_id, e.nombre AS evento_nombre, e.fecha_inicio, e.fecha_termino, e.hora, 
-            te.nombre AS tipo_evento_nombre, c.nombre AS categoria_nombre, e.ubicacion, e.max_per, 
-            e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
-            (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url,
-            (SELECT i.monto FROM pagos i WHERE i.pago_id = e.evento_id LIMIT 1) AS monto
+                    te.nombre AS tipo_evento, c.nombre AS categoria, e.ubicacion, e.max_per, 
+                    e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
+                    (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url,
+                    (SELECT p.monto FROM pagos p WHERE p.pago_id = e.evento_id LIMIT 1) AS monto,
+                    (SELECT s.forma FROM escenario s WHERE s.escenario_id = e.evento_id LIMIT 1) AS forma_escenario,
+                    (SELECT d.descripcion FROM detalles_evento d WHERE d.detalle_evento_id = e.evento_id LIMIT 1) AS descripcion
              FROM eventos e
              JOIN Tipos_Evento te ON e.tipo_evento_id = te.tipo_evento_id
              JOIN Categorias c ON e.categoria_id = c.categoria_id`
@@ -26,10 +28,10 @@ const getImgEvent = async (req, res) => {
 };
 
 const postImgEvent = async (req, res) => {
-    const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, categoria_id, ubicacion, max_per, imagen_url, monto } = req.body;
+    const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, categoria_id, ubicacion, max_per, imagen_url, monto, forma, descripcion } = req.body;
 
     // Validar que todos los campos necesarios estén presentes
-    if (!nombre || !fecha_inicio || !fecha_termino || !hora || !tipo_evento_id || !categoria_id || !ubicacion || !max_per || !imagen_url || !monto) {
+    if (!nombre || !fecha_inicio || !fecha_termino || !hora || !tipo_evento_id || !categoria_id || !ubicacion || !max_per || !imagen_url || !monto || !forma || !descripcion) {
         return res.status(400).send('Todos los campos son obligatorios');
     }
 
@@ -43,6 +45,12 @@ const postImgEvent = async (req, res) => {
 
     if (!validCategoriaIds.includes(categoria_id)) {
         return res.status(400).send('Invalid categoria_id');
+    }
+
+    // Validar forma
+    const validFormas = ['Cuadrado', 'Redondo', 'Triangulo'];
+    if (!validFormas.includes(forma)) {
+        return res.status(400).send('Invalid forma');
     }
 
     try {
@@ -67,6 +75,18 @@ const postImgEvent = async (req, res) => {
             [evento_id, monto]
         );
 
+        // Insertar la forma y asiento en la tabla escenario
+        await pool.query(
+            `INSERT INTO escenario (evento_id, forma, asiento) VALUES (?, ?, ?)`,
+            [evento_id, forma, max_per]
+        );
+
+        // Insertar la descripción en la tabla detalles_evento
+        await pool.query(
+            `INSERT INTO detalles_evento (evento_id, descripcion) VALUES (?, ?)`,
+            [evento_id, descripcion]
+        );
+
         // Éxito al crear el evento
         res.status(201).send('Evento creado correctamente');
     } catch (error) {
@@ -82,10 +102,12 @@ const getApprovedEvent = async (req, res) => {
         // Consulta SQL para obtener eventos con estado "Aprobado" y una sola imagen por evento y nombres correspondientes
         const [rows] = await pool.query(
             `SELECT e.evento_id, e.nombre AS evento_nombre, e.fecha_inicio, e.fecha_termino, e.hora, 
-                    te.nombre AS tipo_evento_nombre, c.nombre AS categoria_nombre, 
+                    te.nombre AS tipo_evento, c.nombre AS categoria, 
                     e.ubicacion, e.max_per, e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
                     (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url,
-                    (SELECT i.monto FROM pagos i WHERE i.pago_id = e.evento_id LIMIT 1) AS monto
+                    (SELECT i.monto FROM pagos i WHERE i.pago_id = e.evento_id LIMIT 1) AS monto,
+                     (SELECT s.forma FROM escenario s WHERE s.escenario_id = e.evento_id LIMIT 1) AS forma_escenario,
+                    (SELECT d.descripcion FROM detalles_evento d WHERE d.detalle_evento_id = e.evento_id LIMIT 1) AS descripcion
              FROM eventos e
              JOIN Tipos_Evento te ON e.tipo_evento_id = te.tipo_evento_id
              JOIN Categorias c ON e.categoria_id = c.categoria_id
