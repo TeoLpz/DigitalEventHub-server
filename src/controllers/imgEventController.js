@@ -27,6 +27,38 @@ const getImgEvent = async (req, res) => {
     }
 };
 
+const getIdImgEvent = async (req, res) => {
+    try {
+        const { id: evento_id } = req.params;
+
+        const [rows] = await pool.query(
+            `SELECT e.evento_id, e.nombre AS evento_nombre, e.fecha_inicio, e.fecha_termino, e.hora, 
+                    te.nombre AS tipo_evento, c.nombre AS categoria, e.ubicacion, e.max_per, 
+                    e.estado, e.autorizado_por, e.fecha_autorizacion, e.validacion_id, 
+                    (SELECT i.imagen_url FROM imagenes i WHERE i.evento_id = e.evento_id LIMIT 1) AS imagen_url,
+                    (SELECT p.monto FROM pagos p WHERE p.pago_id = e.evento_id LIMIT 1) AS monto,
+                    (SELECT s.forma FROM escenario s WHERE s.escenario_id = e.evento_id LIMIT 1) AS forma_escenario,
+                    (SELECT d.descripcion FROM detalles_evento d WHERE d.detalle_evento_id = e.evento_id LIMIT 1) AS descripcion
+             FROM eventos e
+             JOIN Tipos_Evento te ON e.tipo_evento_id = te.tipo_evento_id
+             JOIN Categorias c ON e.categoria_id = c.categoria_id
+             WHERE e.evento_id = ?`,
+            [evento_id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Evento no encontrado' });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        console.error('Error al obtener el evento:', error);
+        res.status(500).send('Error al obtener el evento');
+    }
+};
+
+
+
 const postImgEvent = async (req, res) => {
     const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, categoria_id, ubicacion, max_per, imagen_url, monto, forma, descripcion } = req.body;
 
@@ -204,6 +236,7 @@ const getApprovedEvent = async (req, res) => {
 
 module.exports = {
     getImgEvent,
+    getIdImgEvent,
     postImgEvent,
     getApprovedEvent,
     putImgEvent
