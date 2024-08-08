@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const eventnController = require('../controllers/eventController');
 const imgEventController = require('../controllers/imgEventController');// Ruta del get eventos con imagen
-const pendingEventController = require('../controllers/pendingEventController');
 const verifyToken = require("../middlewares/verify-token-rol");
 
 
@@ -17,11 +16,8 @@ router.get('/get/img/:id', imgEventController.getIdImgEvent);
 router.post('/post/img', imgEventController.postImgEvent);
 router.put('/put/img/:id', imgEventController.putImgEvent);
 router.get('/get/approved', imgEventController.getApprovedEvent);
-
-// Eventos por aprobar - Teo Team
-router.get('/get/pending', pendingEventController.getPendingEvent);
-router.post('/post/pending', pendingEventController.postPendingEvent);
-
+router.get('/get/pending', imgEventController.getPendingEvent);
+router.post('/post/pending', imgEventController.postPendingEvent);
 
 
 // Administracion de usarios en eventos - Jesus Team
