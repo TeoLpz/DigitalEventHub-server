@@ -14,6 +14,7 @@ router.get('/get', eventnController.getEvent);
 
 router.get('/get/img', imgEventController.getImgEvent);
 router.post('/post/img', imgEventController.postImgEvent);
+router.put('/put/img/:id', imgEventController.putImgEvent);
 router.get('/get/approved', imgEventController.getApprovedEvent);
 
 // Eventos por aprobar - Teo Team

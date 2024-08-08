@@ -48,7 +48,7 @@ const postImgEvent = async (req, res) => {
     }
 
     // Validar forma
-    const validFormas = ['Cuadrado', 'Redondo', 'Triangulo'];
+    const validFormas = ['Cuadrado', 'Redondo', 'Triangular'];
     if (!validFormas.includes(forma)) {
         return res.status(400).send('Invalid forma');
     }
@@ -76,6 +76,7 @@ const postImgEvent = async (req, res) => {
         );
 
         // Insertar la forma y asiento en la tabla escenario
+        console.log(`Inserting forma: ${forma} with max_per: ${max_per} for evento_id: ${evento_id}`);
         await pool.query(
             `INSERT INTO escenario (evento_id, forma, asiento) VALUES (?, ?, ?)`,
             [evento_id, forma, max_per]
@@ -92,6 +93,82 @@ const postImgEvent = async (req, res) => {
     } catch (error) {
         console.error('Error al crear el evento:', error);
         res.status(500).send('Error al crear el evento');
+    }
+};
+
+const putImgEvent = async (req, res) => {
+    const { id } = req.params;
+    const { nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, categoria_id, ubicacion, max_per, imagen_url, monto, forma, descripcion } = req.body;
+
+    // Validar que todos los campos necesarios estén presentes
+    if (!nombre || !fecha_inicio || !fecha_termino || !hora || !tipo_evento_id || !categoria_id || !ubicacion || !max_per || !imagen_url || !monto || !forma || !descripcion) {
+        return res.status(400).send('Todos los campos son obligatorios');
+    }
+
+    // Validar tipo_evento_id y categoria_id
+    const validTipoEventoIds = [1, 2];
+    const validCategoriaIds = [1, 2, 3, 4];
+
+    if (!validTipoEventoIds.includes(tipo_evento_id)) {
+        return res.status(400).send('Invalid tipo_evento_id');
+    }
+
+    if (!validCategoriaIds.includes(categoria_id)) {
+        return res.status(400).send('Invalid categoria_id');
+    }
+
+    // Validar forma
+    const validFormas = ['Cuadrado', 'Redondo', 'Triangular'];
+    if (!validFormas.includes(forma)) {
+        return res.status(400).send('Invalid forma');
+    }
+
+    try {
+        // Actualizar el evento
+        await pool.query(
+            `UPDATE eventos 
+             SET nombre = ?, fecha_inicio = ?, fecha_termino = ?, hora = ?, tipo_evento_id = ?, categoria_id = ?, ubicacion = ?, max_per = ?
+             WHERE evento_id = ?`,
+            [nombre, fecha_inicio, fecha_termino, hora, tipo_evento_id, categoria_id, ubicacion, max_per, id]
+        );
+
+        // Actualizar la imagen asociada al evento
+        await pool.query(
+            `UPDATE imagenes 
+             SET imagen_url = ?
+             WHERE evento_id = ?`,
+            [imagen_url, id]
+        );
+
+        // Actualizar el pago asociado al evento
+        await pool.query(
+            `UPDATE pagos 
+             SET monto = ?
+             WHERE evento_id = ?`,
+            [monto, id]
+        );
+
+        // Actualizar la forma y asiento en la tabla escenario
+        await pool.query(
+            `UPDATE escenario 
+             SET forma = ?, asiento = ?
+             WHERE evento_id = ?`,
+            [forma, max_per, id]
+        );
+
+        // Actualizar la descripción en la tabla detalles_evento
+        await pool.query(
+            `UPDATE detalles_evento 
+             SET descripcion = ?
+             WHERE evento_id = ?`,
+            [descripcion, id]
+        );
+
+        // Éxito al actualizar el evento
+        res.status(200).send('Evento actualizado correctamente');
+    } catch (error) {
+        console.error('Error al actualizar el evento:', error);
+        res.status(500).send('Error al actualizar el evento');
     }
 };
 
@@ -128,6 +205,7 @@ const getApprovedEvent = async (req, res) => {
 module.exports = {
     getImgEvent,
     postImgEvent,
-    getApprovedEvent
+    getApprovedEvent,
+    putImgEvent
 };
 
